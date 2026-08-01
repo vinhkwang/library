@@ -8,8 +8,8 @@ export default defineConfig({
     port: 5173,
     watch: { usePolling: true },
     proxy: {
-      "/api": "http://server:3000",
-      "/rails": "http://server:3000"
+      "/api": { target: "http://server:3000", changeOrigin: false },
+      "/rails": { target: "http://server:3000", changeOrigin: false }
     }
   }
 });
