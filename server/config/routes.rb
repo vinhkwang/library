@@ -8,7 +8,10 @@ Rails.application.routes.draw do
       get "health" => "health#show"
 
       resource :session, only: [:show, :create, :destroy]
-      resources :documents, only: [:index, :create, :destroy]
+      resources :users, only: [:index]
+      resources :documents, only: [:index, :create, :destroy] do
+        post :copy, on: :member
+      end
     end
   end
 end
