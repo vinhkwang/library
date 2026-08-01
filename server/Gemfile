@@ -23,6 +23,12 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
+# Flexible authentication solution for Rails with Warden
+gem "devise"
+
+# Manage the database schema as idempotent Ruby DSL instead of migrations
+gem "ridgepole"
+
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
