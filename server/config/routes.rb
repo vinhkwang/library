@@ -8,6 +8,7 @@ Rails.application.routes.draw do
       get "health" => "health#show"
 
       resource :session, only: [:show, :create, :destroy]
+      resources :documents, only: [:index, :create, :destroy]
     end
   end
 end
