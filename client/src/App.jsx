@@ -3,6 +3,8 @@ import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import LoginPage from "./pages/LoginPage";
 import MyLibraryPage from "./pages/MyLibraryPage";
+import UsersPage from "./pages/UsersPage";
+import UserLibraryPage from "./pages/UserLibraryPage";
 
 function App() {
   return (
@@ -14,6 +16,26 @@ function App() {
           <ProtectedRoute>
             <Layout>
               <MyLibraryPage />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/users"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <UsersPage />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/users/:id"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <UserLibraryPage />
             </Layout>
           </ProtectedRoute>
         }
