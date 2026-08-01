@@ -4,7 +4,7 @@ class Api::V1::SessionsController < ApplicationController
   def show
     return render json: { error: "not authenticated" }, status: :unauthorized unless current_user
 
-    render json: { user: user_json(current_user) }
+    render json: { user: user_json(current_user), csrf_token: form_authenticity_token }
   end
 
   def create
