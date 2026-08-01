@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import LoginPage from "./pages/LoginPage";
+import MyLibraryPage from "./pages/MyLibraryPage";
 
 function App() {
   return (
@@ -11,7 +12,9 @@ function App() {
         path="/"
         element={
           <ProtectedRoute>
-            <Layout />
+            <Layout>
+              <MyLibraryPage />
+            </Layout>
           </ProtectedRoute>
         }
       />

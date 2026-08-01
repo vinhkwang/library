@@ -7,7 +7,11 @@ export function setCsrfToken(token) {
 }
 
 export default async function request(path, { method = "GET", body } = {}) {
-  const headers = { "Content-Type": "application/json", Accept: "application/json" };
+  const isFormData = body instanceof FormData;
+  const headers = { Accept: "application/json" };
+  if (!isFormData) {
+    headers["Content-Type"] = "application/json";
+  }
   if (method !== "GET") {
     headers["X-CSRF-Token"] = csrfToken;
   }
@@ -16,7 +20,7 @@ export default async function request(path, { method = "GET", body } = {}) {
     method,
     headers,
     credentials: "include",
-    body: body ? JSON.stringify(body) : undefined,
+    body: isFormData ? body : body ? JSON.stringify(body) : undefined,
   });
 
   const data = res.status === 204 ? null : await res.json().catch(() => null);
