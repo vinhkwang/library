@@ -26,7 +26,10 @@ export default async function request(path, { method = "GET", body } = {}) {
   const data = res.status === 204 ? null : await res.json().catch(() => null);
 
   if (!res.ok) {
-    throw new Error(data?.error || "Something went wrong");
+    const message = data?.error || data?.errors?.base?.join(", ") || "Something went wrong";
+    const error = new Error(message);
+    error.data = data;
+    throw error;
   }
 
   return data;
