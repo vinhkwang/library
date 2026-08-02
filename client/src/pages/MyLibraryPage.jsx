@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import request from "../api/client";
 import formatBytes from "../utils/formatBytes";
 import DropZone from "../components/DropZone";
+import PageContainer from "../components/PageContainer";
 
 export default function MyLibraryPage() {
   const [documents, setDocuments] = useState([]);
@@ -40,9 +41,7 @@ export default function MyLibraryPage() {
   }
 
   return (
-    <div>
-      <h2 className="mb-4 text-lg font-semibold">My library</h2>
-
+    <PageContainer title="My library">
       <DropZone onUploaded={(uploaded) => setDocuments((docs) => [...uploaded, ...docs])} />
 
       {error && <p className="my-4 rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
@@ -95,7 +94,7 @@ export default function MyLibraryPage() {
           </tbody>
         </table>
       )}
-    </div>
+    </PageContainer>
   );
 }
 
