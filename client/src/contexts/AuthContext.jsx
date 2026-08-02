@@ -32,8 +32,20 @@ export function AuthProvider({ children }) {
     setUser(null);
   }
 
+  async function changePassword(payload) {
+    const data = await request("/account/password", { method: "PATCH", body: payload });
+    setCsrfToken(data.csrf_token);
+  }
+
+  async function deleteAccount(password) {
+    await request("/account", { method: "DELETE", body: { password } });
+    setUser(null);
+  }
+
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
+    <AuthContext.Provider
+      value={{ user, loading, signIn, signOut, changePassword, deleteAccount }}
+    >
       {children}
     </AuthContext.Provider>
   );
