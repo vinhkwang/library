@@ -18,16 +18,12 @@ class Api::V1::DocumentsController < ApplicationController
   end
 
   def create
-    result = Documents::UploadForm.new(
-      user: current_user,
-      uploads: Array(params[:files]),
-      private: params[:private] || false
-    ).call
+    form = Documents::UploadForm.new(user: current_user, uploads: Array(params[:files]), private: params[:private] || false)
 
-    if result.success?
-      render json: result.value.map { |document| DocumentSerializer.new(document).as_json }, status: :created
+    if form.save
+      render json: form.documents.map { |d| DocumentSerializer.new(d).as_json }, status: :created
     else
-      render json: { errors: result.errors }, status: :unprocessable_entity
+      render json: { errors: form.errors.to_hash(true) }, status: :unprocessable_entity
     end
   end
 

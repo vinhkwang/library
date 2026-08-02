@@ -1,5 +1,7 @@
 module Documents
   class UploadForm
+    include ActiveModel::Model
+
     MAX_SIZE_BYTES = 10.megabytes
     ALLOWED_CONTENT_TYPES = %w[
       application/pdf
@@ -9,42 +11,40 @@ module Documents
       text/plain
     ].freeze
 
-    def initialize(user:, uploads:, private: false)
-      @user = user
-      @uploads = Array(uploads)
-      @private = private
+    attr_accessor :user
+    attr_reader :documents, :uploads
+
+    def uploads=(value)
+      @uploads = Array(value)
     end
 
-    def call
-      errors = validate_uploads
+    def private=(value)
+      @private = value
+    end
 
-      return Result.new(success?: false, value: nil, errors: errors) if errors.any?
+    validate :validate_uploads
 
-      documents = ActiveRecord::Base.transaction do
-        @uploads.map do |upload|
-          @user.documents.create!(name: upload.original_filename, file: upload, private: @private)
+    def save
+      return false unless valid?
+
+      @documents = ActiveRecord::Base.transaction do
+        uploads.map do |upload|
+          user.documents.create!(name: upload.original_filename, file: upload, private: @private)
         end
       end
 
-      Result.new(success?: true, value: documents, errors: {})
+      true
     end
 
     private
 
     def validate_uploads
-      return { base: ["no files given"] } if @uploads.empty?
+      return errors.add(:base, "no files given") if uploads.empty?
 
-      errors = {}
-
-      @uploads.each do |upload|
-        file_errors = []
-        file_errors << "is too large" if upload.size > MAX_SIZE_BYTES
-        file_errors << "has an invalid content type" unless ALLOWED_CONTENT_TYPES.include?(upload.content_type)
-
-        errors[upload.original_filename] = file_errors if file_errors.any?
+      uploads.each do |upload|
+        errors.add(upload.original_filename, "is too large") if upload.size > MAX_SIZE_BYTES
+        errors.add(upload.original_filename, "has an invalid content type") unless ALLOWED_CONTENT_TYPES.include?(upload.content_type)
       end
-
-      errors
     end
   end
 end

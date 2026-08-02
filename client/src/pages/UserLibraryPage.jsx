@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import request from "../api/client";
 import formatBytes from "../utils/formatBytes";
+import PageContainer from "../components/PageContainer";
 
 export default function UserLibraryPage() {
   const { id } = useParams();
@@ -35,9 +36,7 @@ export default function UserLibraryPage() {
   }
 
   return (
-    <div>
-      <h2 className="mb-6 text-lg font-semibold">Their library</h2>
-
+    <PageContainer title="Their library">
       {error && <p className="mb-4 rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
 
       {documents.length === 0 ? (
@@ -83,6 +82,6 @@ export default function UserLibraryPage() {
           </tbody>
         </table>
       )}
-    </div>
+    </PageContainer>
   );
 }
