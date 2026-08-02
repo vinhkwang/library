@@ -8,10 +8,14 @@ class Api::V1::SessionsController < ApplicationController
   end
 
   def create
-    request.env["devise.allow_params_authentication"] = true
-    user = warden.authenticate!(scope: :user)
+    user = User.find_by(email: params.dig(:user, :email).to_s.downcase)
 
-    render json: { user: user_json(user), csrf_token: form_authenticity_token }
+    if user&.valid_password?(params.dig(:user, :password))
+      sign_in(user)
+      render json: { user: user_json(user), csrf_token: form_authenticity_token }
+    else
+      render json: { error: "invalid email or password" }, status: :unauthorized
+    end
   end
 
   def destroy
@@ -21,10 +25,6 @@ class Api::V1::SessionsController < ApplicationController
   end
 
   private
-
-  def warden
-    request.env["warden"]
-  end
 
   def user_json(user)
     { id: user.id, email: user.email }
