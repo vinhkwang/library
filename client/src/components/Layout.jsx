@@ -16,6 +16,9 @@ export default function Layout({ children }) {
             <Link to="/users" className="text-gray-600 hover:text-gray-900">
               Browse
             </Link>
+            <Link to="/account" className="text-gray-600 hover:text-gray-900">
+              Account
+            </Link>
           </nav>
         </div>
         <div className="flex items-center gap-4">

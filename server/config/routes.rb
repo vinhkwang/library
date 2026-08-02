@@ -12,6 +12,9 @@ Rails.application.routes.draw do
       resources :documents, only: [:index, :show, :create, :update, :destroy] do
         post :copy, on: :member
       end
+      resource :account, only: [:destroy] do
+        patch :password, on: :member
+      end
     end
   end
 end
