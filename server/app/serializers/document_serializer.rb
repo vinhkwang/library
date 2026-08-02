@@ -12,7 +12,7 @@ class DocumentSerializer
       private: document.private,
       created_at: document.created_at,
       owner: document.user.email,
-      download_url: Rails.application.routes.url_helpers.rails_blob_path(document.file, only_path: true)
+      download_url: Rails.application.routes.url_helpers.rails_blob_path(document.file, only_path: true, expires_in: 5.minutes)
     }
   end
 

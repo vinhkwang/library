@@ -9,7 +9,7 @@ Rails.application.routes.draw do
 
       resource :session, only: [:show, :create, :destroy]
       resources :users, only: [:index]
-      resources :documents, only: [:index, :create, :destroy] do
+      resources :documents, only: [:index, :show, :create, :update, :destroy] do
         post :copy, on: :member
       end
     end

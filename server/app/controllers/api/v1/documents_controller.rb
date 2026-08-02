@@ -11,6 +11,12 @@ class Api::V1::DocumentsController < ApplicationController
     render json: documents.map { |document| DocumentSerializer.new(document).as_json }
   end
 
+  def show
+    document = Document.visible_to(current_user).find(params[:id])
+
+    render json: DocumentSerializer.new(document).as_json
+  end
+
   def create
     result = Documents::UploadForm.new(
       user: current_user,
@@ -23,6 +29,13 @@ class Api::V1::DocumentsController < ApplicationController
     else
       render json: { errors: result.errors }, status: :unprocessable_entity
     end
+  end
+
+  def update
+    document = current_user.documents.find(params[:id])
+    document.update!(private: params.require(:private))
+
+    render json: DocumentSerializer.new(document).as_json
   end
 
   def destroy
