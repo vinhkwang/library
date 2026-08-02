@@ -22,6 +22,20 @@ export default function MyLibraryPage() {
     setDocuments((docs) => docs.filter((doc) => doc.id !== id));
   }
 
+  async function handleTogglePrivate(id, nextValue) {
+    const previous = documents;
+    setDocuments((docs) =>
+      docs.map((doc) => (doc.id === id ? { ...doc, private: nextValue } : doc))
+    );
+
+    try {
+      await request(`/documents/${id}`, { method: "PATCH", body: { private: nextValue } });
+    } catch (err) {
+      setDocuments(previous);
+      setError(err.message);
+    }
+  }
+
   async function handleUpload(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -76,6 +90,7 @@ export default function MyLibraryPage() {
               <th className="py-2 pr-4 font-medium">Name</th>
               <th className="py-2 pr-4 font-medium">Size</th>
               <th className="py-2 pr-4 font-medium">Uploaded</th>
+              <th className="py-2 pr-4 font-medium">Private</th>
               <th className="py-2 font-medium">Actions</th>
             </tr>
           </thead>
@@ -86,6 +101,12 @@ export default function MyLibraryPage() {
                 <td className="py-2 pr-4">{formatBytes(doc.byte_size)}</td>
                 <td className="py-2 pr-4">
                   {new Date(doc.created_at).toLocaleDateString()}
+                </td>
+                <td className="py-2 pr-4">
+                  <PrivacyToggle
+                    checked={doc.private}
+                    onChange={(next) => handleTogglePrivate(doc.id, next)}
+                  />
                 </td>
                 <td className="py-2">
                   <a
@@ -107,5 +128,25 @@ export default function MyLibraryPage() {
         </table>
       )}
     </div>
+  );
+}
+
+function PrivacyToggle({ checked, onChange }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      onClick={() => onChange(!checked)}
+      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+        checked ? "bg-gray-900" : "bg-gray-300"
+      }`}
+    >
+      <span
+        className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+          checked ? "translate-x-4" : "translate-x-1"
+        }`}
+      />
+    </button>
   );
 }
